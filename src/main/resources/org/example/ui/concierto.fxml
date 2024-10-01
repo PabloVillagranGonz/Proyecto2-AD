@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="437.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
+      <children>
+            <Label layoutX="46.0" layoutY="97.0" text="Nombre" />
+            <Label layoutX="46.0" layoutY="134.0" text="Descripcion" />
+            <Label layoutX="46.0" layoutY="176.0" text="Presupuesto" />
+            <Label layoutX="46.0" layoutY="218.0" text="Tipo" />
+            <TextField fx:id="tfNombre" layoutX="138.0" layoutY="92.0" />
+            <TextField fx:id="tfDescripcion" layoutX="138.0" layoutY="129.0" />
+            <TextField fx:id="tfMPresupuesto" layoutX="138.0" layoutY="171.0" />
+            <Button fx:id="btNuevo" layoutX="79.0" layoutY="284.0" mnemonicParsing="false" onAction="#nuevoConcierto" text="Nuevo" />
+            <Button fx:id="btGuardar" layoutX="149.0" layoutY="284.0" mnemonicParsing="false" onAction="#guardarConcierto" text="Guardar" />
+            <Button fx:id="btEliminar" layoutX="320.0" layoutY="285.0" mnemonicParsing="false" onAction="#eliminarConcierto" text="Eliminar" />
+            <Button fx:id="btModificar" layoutX="231.0" layoutY="285.0" mnemonicParsing="false" onAction="#modificarConcierto" text="Modificar" />
+            <ComboBox fx:id="cbTipo" layoutX="138.0" layoutY="213.0" prefHeight="27.0" prefWidth="167.0" />
+            <Button fx:id="btCancelar" layoutX="402.0" layoutY="284.0" mnemonicParsing="false" onAction="#cancelar" text="Cancelar" />
+            <Label layoutX="118.0" layoutY="33.0" prefHeight="27.0" prefWidth="180.0" text="CRUD CONCIERTOS" textFill="#f20b0b">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+      </children>
+    </AnchorPane>
+  </children>
+</VBox>
