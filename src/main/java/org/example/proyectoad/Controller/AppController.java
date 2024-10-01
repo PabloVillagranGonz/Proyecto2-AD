@@ -12,6 +12,7 @@ import org.example.proyectoad.domain.Concierto;
 import org.example.proyectoad.util.AlertUtils;
 import org.example.proyectoad.domain.Concierto;
 
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -21,11 +22,11 @@ import java.util.Optional;
 
 public class AppController {
 
-    public TextField tfMatricula;
-    public TextField tfMarca;
-    public TextField tfModelo;
+    public TextField tfNombre;
+    public TextField tfDescripcion;
+    public TextField tfPresupuesto;
     public ComboBox<String> cbTipo;
-    public ListView<Concierto> lvCoches;
+    public ListView<Concierto> lvConcierto;
     public Label lbEstado;
     public Button btNuevo, btModificar, btGuardar, btEliminar;
     private enum Accion {
@@ -33,13 +34,13 @@ public class AppController {
     }
     private Accion accion;
 
-    private final CocheDAO cocheDAO;
-    private Coche cocheSeleccionado;
+    private final GrupoDAO grupoDAO;
+    private Concierto conciertoSeleccionado;
 
     public AppController() {
-        cocheDAO = new CocheDAO();
+        grupoDAO = new GrupoDAO();
         try {
-            cocheDAO.conectar();
+            grupoDAO.conectar();
         } catch (SQLException sqle) {
             AlertUtils.mostrarError("Error al conectar con la base de datos");
         } catch (ClassNotFoundException cnfe) {
@@ -54,12 +55,12 @@ public class AppController {
     public void cargarDatos() {
         modoEdicion(false);
 
-        lvCoches.getItems().clear();
+        lvConcierto.getItems().clear();
         try {
-            List<Coche> coches = cocheDAO.obtenerCoches();
-            lvCoches.setItems(FXCollections.observableList(coches));
+            List<Concierto> conciertos = grupoDAO.obtenerConciertos();
+            lvConcierto.setItems(FXCollections.observableList(conciertos));
 
-            String[] tipos = new String[]{"<Selecciona tipo>", "Familiar", "Monovolumen", "Deportivo", "SUV"};
+            String[] tipos = new String[]{"<Selecciona tipo>", "Rock", "Pop", "Regueton", "Indie"};
             cbTipo.setItems(FXCollections.observableArrayList(tipos));
         } catch (SQLException sqle) {
             AlertUtils.mostrarError("Error cargando los datos de la aplicación");
@@ -67,69 +68,70 @@ public class AppController {
     }
 
     @FXML
-    public void nuevoCoche(Event event) {
+    public void nuevoConcierto(Event event) {
         limpiarCajas();
         modoEdicion(true);
         accion = Accion.NUEVO;
     }
 
     @FXML
-    public void modificarCoche(Event event) {
+    public void modificarConcierto(Event event) {
         modoEdicion(true);
         accion = Accion.MODIFICAR;
     }
 
     @FXML
-    public void eliminarCoche(Event event) {
-        Coche coche = lvCoches.getSelectionModel().getSelectedItem();
-        if (coche == null) {
-            lbEstado.setText("ERROR: No se ha seleccionado ningún coche");
+    public void eliminarConcierto(Event event) {
+        Concierto concierto = lvConcierto.getSelectionModel().getSelectedItem();
+        if (concierto == null) {
+            lbEstado.setText("ERROR: No se ha seleccionado ningún concierto");
             return;
         }
 
         try {
             Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmacion.setTitle("Eliminar coche");
+            confirmacion.setTitle("Eliminar concierto");
             confirmacion.setContentText("¿Estás seguro?");
             Optional<ButtonType> respuesta = confirmacion.showAndWait();
             if (respuesta.get().getButtonData() == ButtonBar.ButtonData.CANCEL_CLOSE)
                 return;
 
-            cocheDAO.eliminarCoche(coche);
-            lbEstado.setText("MENSAJE: Coche eliminado con éxito");
+            grupoDAO.eliminarConcierto(concierto);
+            lbEstado.setText("MENSAJE: Concierto eliminado con éxito");
 
             cargarDatos();
         } catch (SQLException sqle) {
-            AlertUtils.mostrarError("No se ha podido eliminar el coche");
+            AlertUtils.mostrarError("No se ha podido eliminar el concierto");
         }
     }
 
     @FXML
-    public void guardarCoche(Event event) {
-        String matricula = tfMatricula.getText();
-        if (matricula.equals("")) {
-            AlertUtils.mostrarError("La matricula es un campo obligatorio");
+    public void guardarConcierto(Event event) {
+        String nombre = tfNombre.getText();
+        if (nombre.equals("")) {
+            AlertUtils.mostrarError("El nombre es un campo obligatorio");
             return;
         }
-        String marca = tfMarca.getText();
-        String modelo = tfModelo.getText();
+
+        String descripcion = tfDescripcion.getText();
+        String presupuesto = tfPresupuesto.getText();
         String tipo = cbTipo.getSelectionModel().getSelectedItem();
-        Coche coche = new Coche(matricula, marca, modelo, tipo);
+        Concierto concierto = new Concierto(presupuesto,nombre, descripcion,tipo);
 
         try {
             switch (accion) {
                 case NUEVO:
-                    cocheDAO.guardarCoche(coche);
+                    grupoDAO.guardarConcierto(concierto);
                     break;
                 case MODIFICAR:
-                    cocheDAO.modificarCoche(cocheSeleccionado, coche);
+                    grupoDAO.modificarConcierto(conciertoSeleccionado, concierto);
                     break;
             }
         } catch (SQLException sqle) {
-            AlertUtils.mostrarError("Error al guadar el coche");
+            AlertUtils.mostrarError("Error al guadar el concierto");
         }
 
-        lbEstado.setText("Coche guardado con éxito");
+        lbEstado.setText("Concierto guardado con éxito");
         cargarDatos();
 
         modoEdicion(false);
@@ -145,20 +147,20 @@ public class AppController {
             return;
 
         modoEdicion(false);
-        cargarCoche(cocheSeleccionado);
+        cargarConcierto(conciertoSeleccionado);
     }
 
-    private void cargarCoche(Coche coche) {
-        tfMatricula.setText(coche.getMatricula());
-        tfMarca.setText(coche.getMarca());
-        tfModelo.setText(coche.getModelo());
-        cbTipo.setValue(coche.getTipo());
+    private void cargarConcierto(Concierto concierto) {
+        tfNombre.setText(concierto.getNombre());
+        tfPresupuesto.setText(concierto.getPresupuesto());
+        tfDescripcion.setText(concierto.getDescripcion());
+        cbTipo.setValue(concierto.getTipo());
     }
 
     @FXML
-    public void seleccionarCoche(Event event) {
-        cocheSeleccionado = lvCoches.getSelectionModel().getSelectedItem();
-        cargarCoche(cocheSeleccionado);
+    public void seleccionarConcierto(Event event) {
+        conciertoSeleccionado = lvConcierto.getSelectionModel().getSelectedItem();
+        cargarConcierto(conciertoSeleccionado);
     }
 
     @FXML
@@ -166,7 +168,7 @@ public class AppController {
 
     }
 
-    @FXML
+/*    @FXML
     public void exportar(ActionEvent event) {
         try {
             FileChooser fileChooser = new FileChooser();
@@ -174,12 +176,12 @@ public class AppController {
 
             FileWriter fileWriter = new FileWriter(fichero);
             CSVPrinter printer = new CSVPrinter(fileWriter,
-                    CSVFormat.DEFAULT.withHeader("id", "matricula", "marca", "modelo", "tipo"));
+                    CSVFormat.DEFAULT.withHeader("id", "presupuesto", "nombre", "descripcion", "tipo"));
 
-            List<Coche> coches = cocheDAO.obtenerCoches();
-            for (Coche coche : coches)
-                printer.printRecord(coche.getId(), coche.getMatricula(), coche.getMarca(),
-                        coche.getModelo(), coche.getTipo());
+            List<Concierto> conciertos = grupoDAO.obtenerConciertos();
+            for (Concierto concierto : conciertos)
+                printer.printRecord(concierto.getId(), concierto.getDescripcion(), concierto.getNombre(),
+                        concierto.getPresupuesto(), concierto.getTipo());
 
             printer.close();
         } catch (SQLException sqle) {
@@ -194,17 +196,17 @@ public class AppController {
      */
     public void mostrarDialogo() {
         Dialog dialog = new Dialog();
-        dialog.setTitle("hola Aitor");
+        dialog.setTitle("hola pablo");
         dialog.setContentText("hola a todos");
         dialog.show();
     }
 
     private void limpiarCajas() {
-        tfMatricula.setText("");
-        tfModelo.setText("");
-        tfMarca.setText("");
+        tfPresupuesto.setText("");
+        tfNombre.setText("");
+        tfDescripcion.setText("");
         cbTipo.setValue("<Selecciona tipo>");
-        tfMatricula.requestFocus();
+        tfNombre.requestFocus();
     }
 
     private void modoEdicion(boolean activar) {
@@ -213,11 +215,11 @@ public class AppController {
         btModificar.setDisable(activar);
         btEliminar.setDisable(activar);
 
-        tfMatricula.setEditable(activar);
-        tfMarca.setEditable(activar);
-        tfModelo.setEditable(activar);
+        tfDescripcion.setEditable(activar);
+        tfNombre.setEditable(activar);
+        tfDescripcion.setEditable(activar);
         cbTipo.setDisable(!activar);
 
-        lvCoches.setDisable(activar);
+        lvConcierto.setDisable(activar);
     }
 }

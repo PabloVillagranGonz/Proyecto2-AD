@@ -5,16 +5,24 @@ public class Concierto {
     private String presupuesto;
     private String nombre;
     private String descripcion;
+    private String tipo;
 
     public Concierto() {
 
     }
 
-    public Concierto(int id, String presupuesto, String nombre, String descripcion) {
+    public Concierto(int id, String presupuesto, String nombre, String descripcion, String tipo) {
         this.id = id;
         this.presupuesto = presupuesto;
         this.nombre = nombre;
         this.descripcion = descripcion;
+        this.tipo = tipo;
+    }
+    public Concierto(String presupuesto, String nombre, String descripcion, String tipo) {
+        this.presupuesto = presupuesto;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.tipo = tipo;
     }
 
     public int getId() {
@@ -47,6 +55,14 @@ public class Concierto {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     @Override

@@ -17,7 +17,7 @@ public class App extends Application {
         AppController controller = new AppController();
 
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(R.getUI("coches.fxml"));
+        loader.setLocation(R.getUI("concierto.fxml"));
         loader.setController(controller);
         VBox vbox = loader.load();
 
