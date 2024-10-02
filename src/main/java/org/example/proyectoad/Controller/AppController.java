@@ -167,8 +167,8 @@ public class AppController {
     public void importar(ActionEvent event) {
 
     }
-
-/*    @FXML
+/*
+    @FXML
     public void exportar(ActionEvent event) {
         try {
             FileChooser fileChooser = new FileChooser();
@@ -191,9 +191,7 @@ public class AppController {
         }
     }
 
-    /**
-     * Boceto de cómo mostrar un Dialog
-     */
+ */
     public void mostrarDialogo() {
         Dialog dialog = new Dialog();
         dialog.setTitle("hola pablo");
